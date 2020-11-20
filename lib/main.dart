@@ -1,7 +1,6 @@
 import 'package:convert_app/Api/ApiMoneyService.dart';
 import 'package:convert_app/entity/Currency.dart';
 import 'package:convert_app/presentation/CurrencyList.dart';
-import 'package:convert_app/presentation/FavoritesDetail.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -48,29 +47,9 @@ class ConvertAppState extends State<ConvertApp> {
           if (!route.didPop(result)) {
             return false;
           }
-          setState(() {
-            // selected = null;
-          });
           return true;
         },
       ),
-    );
-  }
-}
-
-class FavoritesPage extends Page {
-
-  final List<Currency> currencies;
-
-  FavoritesPage(this.currencies) : super(key: ValueKey(currencies));
-
-  Route createRoute(BuildContext context) {
-    return MaterialPageRoute(
-        settings: this,
-        builder: (BuildContext context) {
-          // Passer les sharedPref ?? Possible ?
-          return FavoritesDetail(currencies: currencies);
-        }
     );
   }
 }

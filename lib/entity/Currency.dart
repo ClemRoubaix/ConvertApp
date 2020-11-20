@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Currency {
-  String code;
-  String name;
-  bool favorite = false;
+  final String code;
+  final String name;
+  bool favorite;
 
-  Currency(this.code, this.name);
+  Currency(this.code, this.name, this.favorite);
 }

@@ -4,6 +4,7 @@ import 'package:convert_app/Config/config.dart';
 import 'package:convert_app/entity/Currency.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiMoneyService {
   // Base API url
@@ -20,6 +21,7 @@ class ApiMoneyService {
     @required String endpoint,
     @required Map<String, String> query,
   }) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
     Uri uri = Uri.https(_baseUrl, endpoint, query);
     final response = await http.get(uri, headers: _headers);
     if (response.statusCode == 200) {
@@ -27,7 +29,8 @@ class ApiMoneyService {
       Map<String, dynamic> json = jsonDecode(response.body);
       List<Currency> currencies = [];
       json.forEach((key, value) {
-        currencies.add(Currency(key, value.toString()));
+        bool favorite = pref.getBool(key) ?? false;
+        currencies.add(Currency(key, value.toString(), favorite));
         // print(key);
       });
       return currencies;
