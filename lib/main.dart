@@ -68,6 +68,7 @@ class FavoritesPage extends Page {
     return MaterialPageRoute(
         settings: this,
         builder: (BuildContext context) {
+          // Passer les sharedPref ?? Possible ?
           return FavoritesDetail(currencies: currencies);
         }
     );
