@@ -1,9 +1,9 @@
-import 'package:convert_app/entity/Currency.dart';
-import 'package:convert_app/presentation/FavoritesDetail.dart';
+import 'package:convertApp/entity/Currency.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../main.dart';
+import 'ConvertCurrency.dart';
+import 'FavoritesDetail.dart';
 
 class CurrencyList extends StatefulWidget {
   final List<Currency> currencies;
@@ -20,6 +20,7 @@ enum PopUpMenu { favorite, convert }
 
 class CurrencyListState extends State<CurrencyList> {
   static const FAVORITE = 0;
+  static const CONVERT = 1;
 
   List<Currency> currencies;
 
@@ -38,6 +39,11 @@ class CurrencyListState extends State<CurrencyList> {
                     case FAVORITE:
                       Route route = MaterialPageRoute(
                           builder: (context) => FavoritesDetail(currencies: currencies));
+                      Navigator.push(context, route);
+                      break;
+                    case CONVERT:
+                      Route route = MaterialPageRoute(
+                          builder: (context) => ConvertCurrency(currencies: currencies));
                       Navigator.push(context, route);
                       break;
                     default:
@@ -59,30 +65,34 @@ class CurrencyListState extends State<CurrencyList> {
             ),
           ],
         ),
-        body: ListView(
-          children: [
-            for (var currency in currencies)
-              Row(
-                children: [
-                  Expanded(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+        body: ListView.builder(
+          itemCount: currencies.length,
+          itemBuilder: (context, index) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(currency.code, style: TextStyle(fontSize: 20)),
-                      Text(currency.name),
-                      IconButton(
-                        icon: Icon(Icons.star),
-                        onPressed: () {
-                          _swapFavorite(currency);
-                        },
-                        color: currency.favorite ? Colors.red : Colors.grey,
-                      ),
+                      Text(currencies[index].code, style: TextStyle(fontSize: 20)),
+                      Text(currencies[index].name),
                     ],
-                  )),
-                ],
-              ),
-          ],
-        ));
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.star),
+                  onPressed: () {
+                    _swapFavorite(currencies[index]);
+                  },
+                  color: currencies[index].favorite ? Colors.red : Colors.grey,
+                )
+              ],
+            );
+          },
+        )
+    );
   }
 
   void _swapFavorite(Currency currency) async {
@@ -94,6 +104,7 @@ class CurrencyListState extends State<CurrencyList> {
           prefs.setString(currency.code + "_name", currency.name);
         } else {
           prefs.remove(currency.code);
+          prefs.remove(currency.code + "_name");
         }
     });
   }

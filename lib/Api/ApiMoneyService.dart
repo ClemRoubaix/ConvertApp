@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:convert_app/Config/config.dart';
-import 'package:convert_app/entity/Currency.dart';
+import 'package:convertApp/Config/config.dart';
+import 'package:convertApp/entity/Convert.dart';
+import 'package:convertApp/entity/Currency.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,9 +27,9 @@ class ApiMoneyService {
     final response = await http.get(uri, headers: _headers);
     if (response.statusCode == 200) {
 
-      Map<String, dynamic> json = jsonDecode(response.body);
+      Map<String, dynamic> mJson = json.decode(utf8.decode(response.bodyBytes));
       List<Currency> currencies = [];
-      json.forEach((key, value) {
+      mJson.forEach((key, value) {
         bool favorite = pref.getBool(key) ?? false;
         currencies.add(Currency(key, value.toString(), favorite));
         // print(key);
@@ -37,6 +38,26 @@ class ApiMoneyService {
     } else {
       // If that response was not OK, throw an error.
       throw Exception('Failed to load json data');
+    }
+  }
+
+  convertCurrency (
+      {
+        @required String endpoint,
+        @required Map<String, String> query,
+      }
+      ) async {
+    Uri uri = Uri.https(_baseUrl, endpoint, query);
+    final response = await http.get(uri, headers: _headers);
+    Convert mConvert;
+    debugPrint("get: " + _baseUrl + endpoint);
+    if (response.statusCode == 200) {
+      debugPrint("statusCode: " + response.statusCode.toString());
+      Map<String, dynamic> mJson = json.decode(utf8.decode(response.bodyBytes));
+      mConvert = Convert.fromJson(mJson);
+      return mConvert;
+    } else {
+      throw("No internet connection or something");
     }
   }
 }

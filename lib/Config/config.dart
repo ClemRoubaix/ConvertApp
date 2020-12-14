@@ -1,3 +1,3 @@
 class Config {
-  static const RAPID_API_KEY = "f54d8b0a83mshe9721cf542d312cp1e183ajsn8627e16ea14f";
+  static const RAPID_API_KEY = "2ac94605efmsh614ce9980eed676p10c64fjsn0f80ac7c2605";
 }
